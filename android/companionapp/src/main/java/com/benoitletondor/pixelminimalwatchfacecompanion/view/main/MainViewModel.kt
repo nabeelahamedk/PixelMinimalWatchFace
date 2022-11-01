@@ -59,8 +59,10 @@ class MainViewModel @Inject constructor(
 
     private val userForcedInstallStatusFlow = MutableStateFlow(UserForcedInstallStatus.UNSPECIFIED)
 
+    private val premFlow = MutableStateFlow<PremiumCheckStatus>(PremiumCheckStatus.Premium)
+
     private val currentStepFlow = combine(
-        billing.userPremiumEventStream,
+        premFlow,//billing.userPremiumEventStream,
         userIsBuyingPremiumStateFlow,
         appInstalledStatusStateFlow,
         isSyncingStateFlow,
@@ -83,10 +85,13 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch {
             billing.userPremiumEventStream
                 .collect { premiumStatus ->
+                    Log.i("PREMIUM","$premiumStatus")
                     if( (premiumStatus == PremiumCheckStatus.Premium && lastSyncedPremiumStatusStateFlow.value == false) ||
                         (premiumStatus == PremiumCheckStatus.NotPremium && lastSyncedPremiumStatusStateFlow.value == true) ||
                         (premiumStatus == PremiumCheckStatus.Premium || premiumStatus == PremiumCheckStatus.NotPremium) && lastSyncedPremiumStatusStateFlow.value == null ) {
-                        syncState(premiumStatus == PremiumCheckStatus.Premium)
+                        Log.i("PREMIUM SYNC","$premiumStatus")
+                        syncState(true)
+                        //syncState(premiumStatus == PremiumCheckStatus.Premium)
                     }
                 }
         }
@@ -100,6 +105,7 @@ class MainViewModel @Inject constructor(
     }
 
     private fun syncState(userPremium: Boolean) {
+        Log.i("PREMIUM SYNC","$userPremium")
         viewModelScope.launch {
             try {
                 isSyncingStateFlow.value = true
@@ -134,7 +140,8 @@ class MainViewModel @Inject constructor(
     }
 
     fun triggerSync() {
-        syncState(billing.isUserPremium())
+        syncState(true)
+        //syncState(billing.isUserPremium())
     }
 
     fun retryPremiumStatusCheck() {
@@ -188,7 +195,8 @@ class MainViewModel @Inject constructor(
     }
 
     fun onWatchFaceInstalledButtonPressed() {
-        syncState(billing.isUserPremium())
+        syncState(true)
+        //syncState(billing.isUserPremium())
 
         viewModelScope.launch {
             userForcedInstallStatusFlow.emit(UserForcedInstallStatus.INSTALLED)

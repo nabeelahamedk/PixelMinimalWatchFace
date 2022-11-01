@@ -881,7 +881,8 @@ class PixelMinimalWatchFace : CanvasWatchFaceService() {
 
         private fun handleIsPremiumCallback(isPremium: Boolean) {
             val wasPremium = storage.isUserPremium()
-            storage.setUserPremium(isPremium)
+            storage.setUserPremium(true)
+            //storage.setUserPremium(isPremium)
 
             if( !wasPremium && isPremium ) {
                 Toast.makeText(service, R.string.premium_confirmation, Toast.LENGTH_LONG).show()

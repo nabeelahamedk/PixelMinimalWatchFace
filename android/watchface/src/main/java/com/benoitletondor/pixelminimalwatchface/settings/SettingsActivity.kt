@@ -178,23 +178,6 @@ class SettingsActivity : ComponentActivity() {
                     useAndroid12 = useAndroid12,
                     showWearOSLogo = showWearOSLogo,
                 )
-
-                SupportSection(
-                    isUserPremium = isUserPremium,
-                )
-
-                item(key = "FooterVersion") {
-                    Text(
-                        text ="Version: ${BuildConfig.VERSION_NAME}",
-                        modifier = Modifier.padding(top = 10.dp),
-                    )
-                }
-
-                item(key = "FooterCopyright") {
-                    Text(
-                        text ="Made by Benoit Letondor",
-                    )
-                }
             }
         }
     }
